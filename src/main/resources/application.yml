@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: aiassistant
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/aiassistant}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:}
+
+  ai:
+    model:
+      chat: google-genai
+      embedding:
+        text: google-genai
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY:}
+        chat:
+          model: gemini-2.5-flash
+          temperature: 0.3
+        embedding:
+          api-key: ${GEMINI_API_KEY:}
+          text:
+            model: gemini-embedding-001ju
+            dimensions: 1536
+    vectorstore:
+      pgvector:
+        table-name: rag_embeddings
+        dimensions: 1536
+        distance-type: COSINE_DISTANCE
+        index-type: HNSW
+        initialize-schema: true
+    mcp:
+      server:
+        name: knowledge-assistant
+        version: 1.0.0
+        protocol: STREAMABLE
+        type: SYNC
+    tools:
+      limits:
+        max-calls-per-tool-default: 3
+        max-total-tool-calls: 6
+
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+assistant:
+  api-key: ${ASSISTANT_API_KEY:}
